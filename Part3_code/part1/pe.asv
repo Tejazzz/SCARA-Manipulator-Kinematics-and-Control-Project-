@@ -1,0 +1,66 @@
+function [P] = pe_function()
+
+pos0=[0;-0.8;0];
+pos1=[0;-0.8;0.5];
+pos2=[0.5;-0.6;0.5];
+pos3=[0.8;0;0.5];
+pos4=[0.8;0;0];
+
+t=0:0.001:4;
+
+fs1=norm(pos1-pos0);
+is1=0;
+ftm1=0.6;
+itm1=0;
+[b1]=trj_fnc(fs1,is1,ftm1,itm1);
+s1=b1(1,:);
+s1d=b1(2,:);
+s1dd=b1(3,:);
+
+fs2=norm(pos2-pos1);
+is2=0;
+ftm2=2.2;
+itm2=0.4;
+[b2]=trj_fnc(fs2,is2,ftm2,itm2);
+s2=b2(1,:);
+s2d=b2(2,:);
+s2dd=b2(3,:);
+
+fs3=norm(pos3-pos2);
+is3=0;
+ftm3=3.6;
+itm3=1.8;
+[b3]=trj_fnc(fs3,is3,ftm3,itm3);
+s3=b3(1,:);
+s3d=b3(2,:);
+s3dd=b3(3,:);
+
+fs4=norm(pos4-pos3);
+is4=0;
+ftm4=4;
+itm4=3.4;
+[b4]=trj_fnc(fs4,is4,ftm4,itm4);
+s4=b4(1,:);
+s4d=b4(2,:);
+s4dd=b4(3,:);
+
+for i=1:length(t)
+pe(:,i)=pos0+s1(i)*(pos1-pos0)/norm(pos1-pos0)+s2(i)*(pos2-pos1)/norm(pos2-pos1)+s3(i)*(pos3-pos2)/norm(pos3-pos2)+s4(i)*(pos4-pos3)/norm(pos4-pos3);
+end
+pd=pe;
+
+for i=1:length(t)
+pe_dot(:,i)=s1d(i)*(pos1-pos0)/norm(pos1-pos0)+s2d(i)*(pos2-pos1)/norm(pos2-pos1)+s3d(i)*(pos3-pos2)/norm(pos3-pos2)+s4d(i)*(pos4-pos3)/norm(pos4-pos3);
+end
+pd_dot=pe_dot;
+
+for i=1:length(t)
+pe_dot_dot(:,i)=s1dd(i)*(pos1-pos0)/norm(pos1-pos0)+s2dd(i)*(pos2-pos1)/norm(pos2-pos1)+s3dd(i)*(pos3-pos2)/norm(pos3-pos2)+s4dd(i)*(pos4-pos3)/norm(pos4-pos3);
+end
+pd_dot_dot=pe_dot_dot;
+
+P=[pd;pd_dot;pd_dot_dot;t];
+
+%10rows matix: 1-3 is pe,4-6 is pe_dot, 7-9 is pe_dot_dot, 10 is time
+end
+
